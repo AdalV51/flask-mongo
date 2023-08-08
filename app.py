@@ -1,5 +1,5 @@
 import random
-from flask import Flask
+from flask import Flask, jsonify
 import pymongo
 
 # Connect to MongoDB
@@ -67,21 +67,23 @@ def hello_world():
 def add_record():
     record = get_record()
     collection.insert_one(record)
-    return "Record added."
+    record["_id"] = str(record["_id"])
+    return jsonify(record)
 
 
 @app.route("/list")
 def list_records():
-    result = ""
+    records = []
     for record in collection.find():
-        result += str(record) + "<br>"
-    return result
+        record["_id"] = str(record["_id"])
+        records.append(record)
+    return jsonify(records)
 
 
-@app.route("/deleteall")
+@app.route("/delete-all")
 def delete_all():
     collection.delete_many({})
-    return "All records deleted."
+    return jsonify({"message": "All records deleted"})
 
 
 if __name__ == "__main__":
