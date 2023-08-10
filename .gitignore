@@ -4,4 +4,3 @@ venv/
 *.pyc
 .env
 /tests/
-/test/
